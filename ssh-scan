@@ -1,0 +1,43 @@
+#!/bin/bash
+
+IPDIR=/me/scanner
+NUM=100
+ITR=0
+ADDITR=0
+PERC=0
+RED='\033[0;31m'
+PURPLE='\033[0;35m'
+NC='\033[0m'
+ITR=$((NUM / 10))
+ADDITR=$ITR
+FILE=meta.txt
+START=`wc -l $FILE | grep -o -E '[0-9]{1,4}'`
+
+echo -e "${RED}########################################################################${NC}"
+echo "Enumerating "$((($NUM * 4) * 10))" hosts..."
+echo "Looking for open port 22..."
+
+while [ $ITR -le $NUM ]; do
+	echo ""
+	echo -e "#------------------${PURPLE}$PERC% complete${NC}------------------#"
+	 nmap -sS -p 22 -Pn -n -T5 --max-retries 1 --max-rtt-timeout 500ms -iR $NUM | (grep -B 4 open >> $IPDIR/port22.txt && echo -e "${RED}#*****#${NC}One or more Open SSH ports detected.${RED}#*****#${NC}") & 
+	 nmap -sS -p 22 -Pn -n -T5 --max-retries 1 --max-rtt-timeout 500ms -iR $NUM | (grep -B 4 open >> $IPDIR/port22.txt && echo -e "${RED}#*****#${NC}One or more Open SSH ports detected.${RED}#*****#${NC}") & 
+	 nmap -sS -p 22 -Pn -n -T5 --max-retries 1 --max-rtt-timeout 500ms -iR $NUM | (grep -B 4 open >> $IPDIR/port22.txt && echo -e "${RED}#*****#${NC}One or more Open SSH ports detected.${RED}#*****#${NC}") & 
+	 nmap -sS -p 22 -Pn -n -T5 --max-retries 1 --max-rtt-timeout 500ms -iR $NUM | (grep -B 4 open >> $IPDIR/port22.txt && echo -e "${RED}#*****#${NC}One or more Open SSH ports detected.${RED}#*****#${NC}") & 
+	wait
+	PERC=$((PERC + 10))
+	ITR=$((ITR + ADDITR))
+done
+	echo ""
+	echo -e "#------------------${PURPLE}$PERC% complete${NC}------------------#"
+grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" $IPDIR/port22.txt >> $IPDIR/$FILE
+
+WC=`wc -l $FILE | grep -o -E '[0-9]{1,4}'`
+echo ""
+echo $(($WC - $START)) "new addresses have been added"
+echo "For a total of $WC addresses in file $FILE"
+echo ""
+rm $IPDIR/port22.txt
+echo "Complete... Thank you for using Saloaty's SSH Scanner --==> Now Exiting"
+echo -e "${RED}########################################################################${NC}"
+#"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)"
