@@ -1,14 +1,14 @@
 #!/bin/bash
 
  #########################################################################################################################
-#	Author: Matt Blackmon AKA: Saloaty																					  #
-#																														  #
-#	Definition: Compile a list of IP addresses with port 22 open.   													  #
-#				Can also be configured for any other port 																  #
-#																														  #
-#	Anyone may edit this script as needed. You may need to do some editing for it to work with your system at the moment  #
-#	I will eventually make it so that it will prompt a few questions at the beginning so that it works for most everyone  #
-#																														  #
+#   Author: Matt Blackmon AKA: Saloaty                                                                                    #
+#                                                                                                                         #
+#   Definition: Compile a list of IP addresses with port 22 open.                                                         #
+#               Can also be configured for any other port                                                                 #
+#                                                                                                                         #
+#   Anyone may edit this script as needed. You may need to do some editing for it to work with your system at the moment  #
+#   I will eventually make it so that it will prompt a few questions at the beginning so that it works for most everyone  #
+#                                                                                                                         #
  #########################################################################################################################
 
 
@@ -28,18 +28,18 @@ echo "Enumerating "$((($NUM * 4) * 10))" hosts..." # Math is done to show the ac
 echo "Looking for open port 22..."
 
 while [ $ITR -le $NUM ]; do # Main loop; It seems that more then 4 processes of Nmap at a time seem to throw RTTVAR errors all over the place
-	echo ""					# I have not tested this theory on any other computer so results may vary
-	echo -e "#------------------${PURPLE}$PERC% complete${NC}------------------#" # Prints the percentage of progress
-	 nmap -sS -p 22 -Pn -n -T5 --max-retries 1 --max-rtt-timeout 500ms -iR $NUM | (grep -B 4 open >> $IPDIR/temp22.txt && echo -e "${RED}#*****#${NC}One or more Open SSH ports detected.${RED}#*****#${NC}") & 
-	 nmap -sS -p 22 -Pn -n -T5 --max-retries 1 --max-rtt-timeout 500ms -iR $NUM | (grep -B 4 open >> $IPDIR/temp22.txt && echo -e "${RED}#*****#${NC}One or more Open SSH ports detected.${RED}#*****#${NC}") & 
-	 nmap -sS -p 22 -Pn -n -T5 --max-retries 1 --max-rtt-timeout 500ms -iR $NUM | (grep -B 4 open >> $IPDIR/temp22.txt && echo -e "${RED}#*****#${NC}One or more Open SSH ports detected.${RED}#*****#${NC}") & 
-	 nmap -sS -p 22 -Pn -n -T5 --max-retries 1 --max-rtt-timeout 500ms -iR $NUM | (grep -B 4 open >> $IPDIR/temp22.txt && echo -e "${RED}#*****#${NC}One or more Open SSH ports detected.${RED}#*****#${NC}") & 
-	wait 																		# ^^^^^ The code above gets executed only if there is something to grep which allows me to be able
-	PERC=$((PERC + 10))															# ^^^^^ to tell when one or more hosts with an open port 22 have been detected
-	ITR=$((ITR + ADDITR))
+        echo ""                                 # I have not tested this theory on any other computer so results may vary
+        echo -e "#------------------${PURPLE}$PERC% complete${NC}------------------#" # Prints the percentage of progress
+         nmap -sS -p 22 -Pn -n -T5 --max-retries 1 --max-rtt-timeout 500ms -iR $NUM | (grep -B 4 open >> $IPDIR/temp22.txt && echo -e "${RED}#*****#${NC}One or more Open SSH ports detected.${RED}#*****#${NC}") & 
+         nmap -sS -p 22 -Pn -n -T5 --max-retries 1 --max-rtt-timeout 500ms -iR $NUM | (grep -B 4 open >> $IPDIR/temp22.txt && echo -e "${RED}#*****#${NC}One or more Open SSH ports detected.${RED}#*****#${NC}") & 
+         nmap -sS -p 22 -Pn -n -T5 --max-retries 1 --max-rtt-timeout 500ms -iR $NUM | (grep -B 4 open >> $IPDIR/temp22.txt && echo -e "${RED}#*****#${NC}One or more Open SSH ports detected.${RED}#*****#${NC}") & 
+         nmap -sS -p 22 -Pn -n -T5 --max-retries 1 --max-rtt-timeout 500ms -iR $NUM | (grep -B 4 open >> $IPDIR/temp22.txt && echo -e "${RED}#*****#${NC}One or more Open SSH ports detected.${RED}#*****#${NC}") & 
+        wait                                                                        # ^^^^^ The code above gets executed only if there is something to grep which allows me to be able
+        PERC=$((PERC + 10))                                                         # ^^^^^ to tell when one or more hosts with an open port 22 have been detected
+        ITR=$((ITR + ADDITR))
 done
-	echo ""
-	echo -e "#------------------${PURPLE}$PERC% complete${NC}------------------#" # Prints the final 100% of progress because the iteration is from 0%-90% with only 10 iterations (which can be changed)
+        echo ""
+        echo -e "#------------------${PURPLE}$PERC% complete${NC}------------------#" # Prints the final 100% of progress because the iteration is from 0%-90% with only 10 iterations (which can be changed)
 grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" $IPDIR/temp22.txt >> $IPDIR/$FILE # This greps out only the IP addresses so that none of the other output from Nmap is in the host list
 
 WC=`wc -l $FILE | grep -o -E '[0-9]{1,4}'` # Count of IPs at the end to subtract from the count of IPs at the beginning
